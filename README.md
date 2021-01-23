@@ -1,2 +1,2 @@
 # run-in-all
-Run the same yarn or npm script in a list of directories
+A CLI tool to run the same npm-script in multiple directories in parallel or sequential.

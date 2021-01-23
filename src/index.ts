@@ -18,9 +18,9 @@ const options = yargs
     demandOption: false,
     default: false,
   })
-  .option('n', {
-    alias: 'npm',
-    describe: 'Run the command with npm.',
+  .option('y', {
+    alias: 'yarn',
+    describe: 'Run the command with yarn.',
     type: 'boolean',
     demandOption: false,
     default: false,
@@ -29,7 +29,7 @@ const options = yargs
 const [command, ...directories] = options._ as string[];
 
 runCommandInDirs(command, directories, {
-  isNpm: options.n,
+  isYarn: options.y,
   parallel: options.p,
   silent: options.s,
 }).then(process.exit);

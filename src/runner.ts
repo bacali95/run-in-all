@@ -1,11 +1,11 @@
-import { green, red, yellow } from 'chalk';
+import { yellow } from 'chalk';
 import { exec } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import logger from './logger';
 
 type RunOptions = {
-  isNpm?: boolean;
+  isYarn?: boolean;
   silent?: boolean;
   parallel?: boolean;
 };
@@ -22,7 +22,7 @@ export async function runCommandInDirs(
   options: RunOptions,
 ): Promise<number> {
   if (options.parallel) {
-    return await Promise.all(
+    return Promise.all(
       directories.map((directory) =>
         runCommandInDir(command, directory, options),
       ),
@@ -44,7 +44,7 @@ function runCommandInDir(
   directory: string,
   options: RunOptions,
 ): Promise<number> {
-  const { isNpm, silent } = options;
+  const { isYarn, silent } = options;
   const isInstallCommand = command === 'install';
 
   if (!existsSync(directory)) {
@@ -70,7 +70,7 @@ function runCommandInDir(
     return;
   }
 
-  const fullCmd = isNpm
+  const fullCmd = !isYarn
     ? `npm ${isInstallCommand ? '' : 'run'} ${command} --prefix ${directory}`
     : `yarn --cwd ${directory} ${isInstallCommand ? '' : 'run'} ${command}`;
 
