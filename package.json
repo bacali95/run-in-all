@@ -1,0 +1,34 @@
+{
+  "name": "run-in-all",
+  "version": "1.0.0",
+  "description": "Run the same yarn or npm script in a list of directories",
+  "main": "./bin/index.js",
+  "bin": {
+    "run-in-all": "./bin/index.js"
+  },
+  "author": {
+    "name": "Nasreddine Bac ALi",
+    "email": "nasreddine.bacali95@gmail.com",
+    "url": "https://nasreddinebacali.info"
+  },
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts",
+    "start:prod": "node ."
+  },
+  "dependencies": {
+    "boxen": "^5.0.0",
+    "chalk": "^4.1.0",
+    "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.19.15",
+    "@types/yargs": "^15.0.12",
+    "eslint": "^7.18.0",
+    "eslint-config-airbnb-typescript-prettier": "^4.1.0",
+    "prettier": "^2.2.1",
+    "typescript": "^4.1.3"
+  }
+}
