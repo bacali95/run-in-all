@@ -5,9 +5,10 @@ import { join } from 'path';
 import logger from './logger';
 
 type RunOptions = {
-  isYarn?: boolean;
-  silent?: boolean;
-  parallel?: boolean;
+  isYarn: boolean;
+  args: string;
+  silent: boolean;
+  parallel: boolean;
 };
 
 /**
@@ -44,7 +45,7 @@ function runCommandInDir(
   directory: string,
   options: RunOptions,
 ): Promise<number> {
-  const { isYarn, silent } = options;
+  const { isYarn, silent, args } = options;
   const isInstallCommand = command === 'install';
 
   if (!existsSync(directory)) {
@@ -71,8 +72,12 @@ function runCommandInDir(
   }
 
   const fullCmd = !isYarn
-    ? `npm ${isInstallCommand ? '' : 'run'} ${command} --prefix ${directory}`
-    : `yarn --cwd ${directory} ${isInstallCommand ? '' : 'run'} ${command}`;
+    ? `npm ${
+        isInstallCommand ? '' : 'run'
+      } ${command} ${args} --prefix ${directory}`
+    : `yarn --cwd ${directory} ${
+        isInstallCommand ? '' : 'run'
+      } ${command} ${args}`;
 
   logger.log(yellow.bold(fullCmd), directory);
   return new Promise<number>((resolve) => {

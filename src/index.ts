@@ -4,6 +4,13 @@ import { runCommandInDirs } from './runner';
 
 const options = yargs
   .usage('run-in-all [command] [directories...]')
+  .option('a', {
+    alias: 'args',
+    describe: 'Run the command with args.',
+    type: 'string',
+    demandOption: false,
+    default: '',
+  })
   .option('p', {
     alias: 'parallel',
     describe: 'Run the command in all directories in parallel.',
@@ -30,6 +37,7 @@ const [command, ...directories] = options._ as string[];
 
 runCommandInDirs(command, directories, {
   isYarn: options.y,
+  args: options.a,
   parallel: options.p,
   silent: options.s,
 }).then(process.exit);
