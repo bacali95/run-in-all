@@ -1,5 +1,5 @@
-import { yellow } from 'chalk';
-import { exec } from 'child_process';
+import { green, yellow } from 'chalk';
+import { spawn } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import logger from './logger';
@@ -47,13 +47,14 @@ function runCommandInDir(
 ): Promise<number> {
   const { isYarn, silent, args } = options;
   const isInstallCommand = command === 'install';
+  const absoluteDirectory = join(process.cwd(), directory);
 
-  if (!existsSync(directory)) {
+  if (!existsSync(absoluteDirectory)) {
     logger.error(`Directory '${directory}' not found!`, directory);
     return;
   }
 
-  const packageFilePath = join(directory, 'package.json');
+  const packageFilePath = join(absoluteDirectory, 'package.json');
   if (!existsSync(packageFilePath)) {
     logger.error(`File '${directory}/package.json' not found!`, directory);
     return;
@@ -71,23 +72,27 @@ function runCommandInDir(
     return;
   }
 
-  const fullCmd = !isYarn
-    ? `npm ${
-        isInstallCommand ? '' : 'run'
-      } ${command} ${args} --prefix ${directory}`
-    : `yarn --cwd ${directory} ${
-        isInstallCommand ? '' : 'run'
-      } ${command} ${args}`;
+  const fullCmd = {
+    command: isYarn ? 'yarn' : 'npm',
+    args: `${isInstallCommand ? '' : 'run'} ${command} ${args}`
+      .split(/ +/)
+      .filter(Boolean),
+  };
 
-  logger.log(yellow.bold(fullCmd), directory);
+  logger.log(
+    `${green.bold(fullCmd.command)} ${yellow.bold(fullCmd.args.join(' '))}`,
+    directory,
+  );
   return new Promise<number>((resolve) => {
-    const child = exec(fullCmd);
+    const child = spawn(fullCmd.command, fullCmd.args, {
+      cwd: absoluteDirectory,
+    });
 
     if (!silent) {
-      child.stdout?.on('data', (chunk) =>
+      child.stdout.on('data', (chunk) =>
         logger.log(Buffer.from(chunk).toString(), directory),
       );
-      child.stderr?.on('data', (chunk) =>
+      child.stderr.on('data', (chunk) =>
         logger.error(Buffer.from(chunk).toString(), directory),
       );
     }
