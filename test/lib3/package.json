@@ -1,0 +1,6 @@
+{
+    "scripts": {
+        "sleep": "sleep 3s",
+        "echo": "echo"
+    }
+}
